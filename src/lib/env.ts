@@ -1,6 +1,6 @@
 export const ENV = {
   // ── LLM Providers ────────────────────────────────────────
-  DEEPSEEK_API_KEY: '',
+  DEEPSEEK_API_KEY: process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY || '',
   CLAUDE_API_KEY:   '',
   OPENAI_API_KEY:   '',
 
