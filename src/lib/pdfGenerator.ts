@@ -17,7 +17,7 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
 
   const buildRiskMatrixHTML = () => {
     const matrix = Array(5).fill(0).map(() => Array(5).fill(''));
-    
+
     hallazgos.forEach(h => {
       if (h.probabilidad && h.impacto && h.probabilidad <= 5 && h.impacto <= 5) {
         matrix[5 - h.impacto][h.probabilidad - 1] += `&bull; ${h.titulo}<br>`;
@@ -85,7 +85,7 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
   const htmlContent = `
     <div style="font-family: 'Computer Modern', Georgia, 'Times New Roman', serif; font-size: 11pt; line-height: 1.6; text-align: justify; color: #000; max-width: 800px; margin: 0 auto;">
       <div style="text-align: center; margin-bottom: 2rem;">
-        <h1 style="font-size: 18pt; margin-bottom: 5px; text-transform: uppercase; font-weight: normal; letter-spacing: 2px;">INFORME TÉCNICO EJECUTIVO</h1>
+        <h1 style="font-size: 18pt; margin-bottom: 5px; text-transform: uppercase; font-weight: normal; letter-spacing: 2px;">INFORME TÉCNICO</h1>
         <h2 style="font-size: 12pt; margin-top: 0; font-weight: normal; font-style: italic;">AUDITORÍA DE SEGURIDAD EN SMART CONTRACTS</h2>
         <hr style="border: 0; border-top: 1px solid #000; width: 50%; margin: 15px auto;">
       </div>
@@ -103,20 +103,20 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
 
       <hr style="border: 0; border-top: 2px solid #000; margin-bottom: 20px;">
 
-      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">I. RESUMEN EJECUTIVO</h3>
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">I. RESUMEN EJECUTIVO</h3><br>
       <p>El presente informe analiza de manera exhaustiva la superficie de ataque y los vectores de vulnerabilidad del contrato inteligente <strong>${dashboardPayload.contrato?.name || 'Smart Contract'}</strong>. Mediante la ejecución paralela de múltiples agentes de Inteligencia Artificial especializados (<em>Scanner, Hacker, Economist, Compliance</em>), se evidencian fallas estructurales y riesgos latentes expuestos en la red blockchain.</p>
-      <p>Si bien la arquitectura base presenta ciertos controles de calidad, se ha identificado de forma concluyente que la <em>exposición de funciones críticas</em> representa riesgos financieros <strong>reales y explotables</strong>. El análisis resalta que la mitigación de estos hallazgos es un paso mandatorio previo al despliegue productivo final.</p>
+      <p>Si bien la arquitectura base presenta ciertos controles de calidad, se ha identificado de forma concluyente que la <em>exposición de funciones críticas</em> representa riesgos financieros <strong>reales y explotables</strong>. El análisis resalta que la mitigación de estos hallazgos es un paso mandatorio previo al despliegue productivo final.</p><br>
 
       <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">II. OBJETIVO DEL ANÁLISIS</h3>
-      <p>Evaluar integralmente la integridad lógica, la viabilidad económica y el cumplimiento normativo (ISO 27001, NIST) del código fuente provisto, delimitando vectores de ataque <em>Zero-Day</em> y determinando el nivel exacto de exposición mediante el <strong>Índice de Superficie de Ataque (ISA)</strong>.</p>
+      <p>Evaluar integralmente la integridad lógica, la viabilidad económica y el cumplimiento normativo (ISO 27001, NIST) del código fuente provisto, delimitando vectores de ataque <em>Zero-Day</em> y determinando el nivel exacto de exposición mediante el <strong>Índice de Superficie de Ataque (ISA)</strong>.</p><br>
 
       <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">III. MATRIZ DE RIESGO (PROBABILIDAD E IMPACTO)</h3>
-      <p>Para priorizar la remediación técnica, a continuación se presenta la matriz de riesgo consolidada según la norma ISO 31000. Los hallazgos se posicionan evaluando el impacto financiero contra la facilidad de explotación.</p>
+      <p>Para priorizar la remediación técnica, a continuación se presenta la matriz de riesgo consolidada según la norma ISO 31000. Los hallazgos se posicionan evaluando el impacto financiero contra la facilidad de explotación.</p><br>
 
       ${buildRiskMatrixHTML()}
 
       <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">IV. ANÁLISIS Y HALLAZGOS TÉCNICOS</h3>
-      <p>A continuación se delinean los resultados consolidados de las auditorías dinámicas realizadas por el escuadrón de agentes.</p>
+      <p>A continuación se delinean los resultados consolidados de las auditorías dinámicas realizadas por el escuadrón de agentes.</p><br>
 
       <ul style="padding-left: 20px; list-style-type: square;">
       ${hallazgos.length > 0 ? hallazgos.map((h: any) => `
@@ -137,14 +137,14 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
         <li><strong>Exposición Perimetral:</strong> El perímetro del contrato (interfaces públicas) expone demasiada lógica transaccional. La falta de modificadores restrictivos es el punto de falla único más prominente.</li>
         <li><strong>Robustez Financiera:</strong> Las validaciones de flujo de tokens son susceptibles a manipulaciones de estado (<em>ej. Reentrancy o desbalances de Oracle</em>), lo que compromete directamente los fondos depositados por usuarios e inversores institucionales.</li>
         <li><strong>Calidad de Código:</strong> A pesar de las brechas de seguridad, la legibilidad del código es adecuada, facilitando enormemente la inserción de parches.</li>
-      </ul>
+      </ul><br>
 
       <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">VI. RECOMENDACIONES DE LA ALTA GERENCIA TÉCNICA</h3>
       <ol style="padding-left: 20px;">
         <li><strong>Implementación de Roles Estrictos (RBAC):</strong> Reforzar o implementar <code>AccessControl</code> de OpenZeppelin. Funciones de actualización del sistema y retiro de fondos de emergencia deben requerir configuración Multi-Sig.</li>
         <li><strong>Mitigación de Patrones Anti-Patrón:</strong> Aplicar el patrón <em>Checks-Effects-Interactions</em> en todas las funciones <code>payable</code> e incluir candados tipo <code>ReentrancyGuard</code>.</li>
         <li><strong>Auditoría Continua (Shift-Left Security):</strong> Integrar agentes de IA directamente en el pipeline CI/CD del desarrollo para frenar vulnerabilidades antes de generar el <em>bytecode</em> final en Testnet.</li>
-      </ol>
+      </ol><br>
 
       <div style="page-break-before: always;"></div>
 
@@ -155,7 +155,7 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
 
       <p>El <strong>ISA</strong> es un indicador cuantitativo matemático que estima de forma empírica la exposición del contrato inteligente frente a la Internet abierta y actores maliciosos.</p>
 
-      <p><strong>Fórmula de Ponderación Matemática:</strong></p>
+      <p><strong>Fórmula de Ponderación Matemática:</strong></p><br>
       <blockquote style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #ccc; font-style: italic;">
         <strong>ISA</strong> = (Activos &times; 0.3) + (Servicios &times; 0.3) + (Vulnerabilidades &times; 0.4)
       </blockquote>
@@ -168,7 +168,7 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
         <li>&bull; <strong>Vulnerabilidades (V):</strong> ${V} <em>(Hallazgos de gravedad Media a Crítica)</em></li>
       </ul>
 
-      <p><strong>Ejecución:</strong></p>
+      <p><strong>Ejecución:</strong></p><br>
       <div style="background-color: #f1f1f1; padding: 10px; border: 1px solid #ccc;">
         <strong>ISA</strong> = (${A} &times; 0.3) + (${S} &times; 0.3) + (${V} &times; 0.4)<br>
         <strong>ISA</strong> = ${(A * 0.3).toFixed(1)} + ${(S * 0.3).toFixed(1)} + ${(V * 0.4).toFixed(1)}<br>
@@ -184,13 +184,13 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
     wrapper.innerHTML = htmlContent;
 
     const html2pdf = (await import('html2pdf.js')).default;
-    
+
     const opt = {
-      margin:       15,
-      filename:     `Reporte_Harvard_Style_${dashboardPayload.audit_id || 'Auditoria'}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      margin: 15,
+      filename: `Reporte_Harvard_Style_${dashboardPayload.audit_id || 'Auditoria'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     html2pdf().from(wrapper).set(opt).save();
