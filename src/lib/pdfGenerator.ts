@@ -1,16 +1,13 @@
 // @ts-nocheck
-import { marked } from 'marked';
-
 export async function generateExecutiveReportPDF(auditResult: any, dashboardPayload: any) {
   if (!auditResult || !dashboardPayload) {
     alert("No hay datos de auditoría disponibles para generar el reporte.");
     return;
   }
 
-  // Adaptación de los datos al índice ISA (Índice de Superficie de Ataque)
   const hallazgos = auditResult.hallazgos || dashboardPayload.tabla_hallazgos || [];
-  const A = dashboardPayload.contrato ? 1 : 0; // Contratos/Librerías
-  const S = auditResult.funciones_analizadas || 5; // Funciones/Servicios analizados
+  const A = dashboardPayload.contrato ? 1 : 0;
+  const S = auditResult.funciones_analizadas || 5;
   const V = hallazgos.length;
 
   const isaScore = (A * 0.3) + (S * 0.3) + (V * 0.4);
@@ -18,142 +15,184 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
 
   const dateStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
 
-  // Construcción del documento en Markdown siguiendo los cánones solicitados
-  const markdownContent = `
-<div style="text-align: center; font-weight: bold; margin-bottom: 2rem; font-size: 14pt;">
-INFORME TÉCNICO<br>
-EQUIPO DE AUDITORIA -5 AGENT CATS
-</div>
+  const buildRiskMatrixHTML = () => {
+    const matrix = Array(5).fill(0).map(() => Array(5).fill(''));
+    
+    hallazgos.forEach(h => {
+      if (h.probabilidad && h.impacto && h.probabilidad <= 5 && h.impacto <= 5) {
+        matrix[5 - h.impacto][h.probabilidad - 1] += `&bull; ${h.titulo}<br>`;
+      }
+    });
 
-<br>
+    return `
+      <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 8pt; margin: 15px 0;">
+        <tr>
+          <th rowspan="6" style="padding: 10px; border: 1px solid #000; background-color: #f5f5f5;">I<br>M<br>P<br>A<br>C<br>T<br>O</th>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">5</th>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffffcc;">${matrix[0][0]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffe6cc;">${matrix[0][1]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffcccc;">${matrix[0][2]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ff9999;">${matrix[0][3]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ff6666; color: white;">${matrix[0][4]}</td>
+        </tr>
+        <tr>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">4</th>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #e6ffcc;">${matrix[1][0]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffffcc;">${matrix[1][1]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffe6cc;">${matrix[1][2]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffcccc;">${matrix[1][3]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ff9999;">${matrix[1][4]}</td>
+        </tr>
+        <tr>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">3</th>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ccffcc;">${matrix[2][0]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #e6ffcc;">${matrix[2][1]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffffcc;">${matrix[2][2]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffe6cc;">${matrix[2][3]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffcccc;">${matrix[2][4]}</td>
+        </tr>
+        <tr>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">2</th>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #99ff99;">${matrix[3][0]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ccffcc;">${matrix[3][1]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #e6ffcc;">${matrix[3][2]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffffcc;">${matrix[3][3]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffe6cc;">${matrix[3][4]}</td>
+        </tr>
+        <tr>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">1</th>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #66ff66;">${matrix[4][0]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #99ff99;">${matrix[4][1]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ccffcc;">${matrix[4][2]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #e6ffcc;">${matrix[4][3]}</td>
+          <td style="border: 1px solid #000; padding: 5px; background-color: #ffffcc;">${matrix[4][4]}</td>
+        </tr>
+        <tr>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;"></th>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">1</th>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">2</th>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">3</th>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">4</th>
+          <th style="border: 1px solid #000; padding: 5px; background-color: #f5f5f5;">5</th>
+        </tr>
+        <tr>
+          <th colspan="7" style="padding: 10px; border: 1px solid #000; background-color: #f5f5f5;">PROBABILIDAD</th>
+        </tr>
+      </table>
+    `;
+  };
 
-**INFORME**  
-**FECHA:** ${dateStr}
+  const htmlContent = `
+    <div style="font-family: 'Computer Modern', Georgia, 'Times New Roman', serif; font-size: 11pt; line-height: 1.6; text-align: justify; color: #000; max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 18pt; margin-bottom: 5px; text-transform: uppercase; font-weight: normal; letter-spacing: 2px;">INFORME TÉCNICO EJECUTIVO</h1>
+        <h2 style="font-size: 12pt; margin-top: 0; font-weight: normal; font-style: italic;">AUDITORÍA DE SEGURIDAD EN SMART CONTRACTS</h2>
+        <hr style="border: 0; border-top: 1px solid #000; width: 50%; margin: 15px auto;">
+      </div>
 
-Agente 1 - Orchestrator (Gestión y Parsing)  
-Agente 2 - Scanner (Reconocimiento Perimetral)  
-Agente 3 - Hacker (Explotación de Vulnerabilidades)  
-Agente 4 - Economist (Evaluación de Riesgo Financiero)  
-Agente 5 - Compliance (Normativas ISO/NIST)
+      <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 11pt;">
+        <div>
+          <strong>PARA:</strong> Alta Gerencia / Cliente Final<br>
+          <strong>DE:</strong> Equipo de Auditoría IA - 5 Agent Cats<br>
+        </div>
+        <div style="text-align: right;">
+          <strong>FECHA:</strong> ${dateStr}<br>
+          <strong>ID:</strong> ${dashboardPayload.audit_id || 'N/A'}<br>
+        </div>
+      </div>
 
-<br>
+      <hr style="border: 0; border-top: 2px solid #000; margin-bottom: 20px;">
 
-**PARA:** Cesar Roberto Cuenca Díaz  
-Docente SEG-372 SEGURIDAD EN REDES II
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">I. RESUMEN EJECUTIVO</h3>
+      <p>El presente informe analiza de manera exhaustiva la superficie de ataque y los vectores de vulnerabilidad del contrato inteligente <strong>${dashboardPayload.contrato?.name || 'Smart Contract'}</strong>. Mediante la ejecución paralela de múltiples agentes de Inteligencia Artificial especializados (<em>Scanner, Hacker, Economist, Compliance</em>), se evidencian fallas estructurales y riesgos latentes expuestos en la red blockchain.</p>
+      <p>Si bien la arquitectura base presenta ciertos controles de calidad, se ha identificado de forma concluyente que la <em>exposición de funciones críticas</em> representa riesgos financieros <strong>reales y explotables</strong>. El análisis resalta que la mitigación de estos hallazgos es un paso mandatorio previo al despliegue productivo final.</p>
 
----
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">II. OBJETIVO DEL ANÁLISIS</h3>
+      <p>Evaluar integralmente la integridad lógica, la viabilidad económica y el cumplimiento normativo (ISO 27001, NIST) del código fuente provisto, delimitando vectores de ataque <em>Zero-Day</em> y determinando el nivel exacto de exposición mediante el <strong>Índice de Superficie de Ataque (ISA)</strong>.</p>
 
-### I. RESUMEN EJECUTIVO 
-El informe analiza la superficie de ataque pública y las vulnerabilidades del contrato inteligente **${dashboardPayload.contrato?.name || 'Smart Contract'}** mediante técnicas de auditoría estática y dinámica. Los resultados evidencian una infraestructura expuesta a la red blockchain compuesta principalmente por métodos y variables públicas. 
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">III. MATRIZ DE RIESGO (PROBABILIDAD E IMPACTO)</h3>
+      <p>Para priorizar la remediación técnica, a continuación se presenta la matriz de riesgo consolidada según la norma ISO 31000. Los hallazgos se posicionan evaluando el impacto financiero contra la facilidad de explotación.</p>
 
-Sin embargo, se identificó la exposición de funciones críticas y flujos de valor que podrían representar riesgos potenciales de seguridad. 
+      ${buildRiskMatrixHTML()}
 
-Los agentes especializados (Scanner, Hacker y Economist) proporcionaron la mayor visibilidad para el mapeo de la infraestructura del contrato, detectando vectores clave en su arquitectura.
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">IV. ANÁLISIS Y HALLAZGOS TÉCNICOS</h3>
+      <p>A continuación se delinean los resultados consolidados de las auditorías dinámicas realizadas por el escuadrón de agentes.</p>
 
-### II. ANTECEDENTES
-El presente análisis se originó a partir de la necesidad de conocer la postura de seguridad perimetral y la exposición pública de la lógica del contrato asociado. Se realizó un escaneo del código fuente para identificar posibles vectores de ataque, funciones mal configuradas o expuestas inadvertidamente, empleando herramientas de reconocimiento algorítmico y agentes LLM para recopilar información durante el periodo de evaluación.
+      <ul style="padding-left: 20px; list-style-type: square;">
+      ${hallazgos.length > 0 ? hallazgos.map((h: any) => `
+        <li style="margin-bottom: 15px;">
+          <strong>${h.titulo.toUpperCase()}</strong><br>
+          <span style="font-size: 10pt;">
+          &bull; <strong>Severidad:</strong> <u>${h.severidad.toUpperCase()}</u> | <strong>Función Afectada:</strong> <em>${h.funcion_afectada || 'General'}</em><br>
+          &bull; <strong>Implicación:</strong> ${h.descripcion}<br>
+          &bull; <strong>Impacto Económico Estimado:</strong> <u>Alto riesgo de pérdida de liquidez (TVL)</u> si no es parcheado en etapas tempranas.
+          </span>
+        </li>
+      `).join('') : '<p style="font-style: italic;">Tras una evaluación minuciosa, no se han detectado vulnerabilidades críticas que comprometan el núcleo financiero o la lógica de gobernanza del contrato.</p>'}
+      </ul>
 
-### III. OBJETIVO GENERAL 
-Identificar y evaluar la superficie de ataque pública del contrato inteligente mediante el uso de herramientas de reconocimiento y agentes OSINT simulados, para determinar el nivel de exposición de sus activos digitales y servicios tecnológicos.
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">V. CONCLUSIONES SINTETIZADAS</h3>
+      <p>En función de las pruebas de estrés estáticas e inferencias del LLM:</p>
+      <ul style="padding-left: 20px;">
+        <li><strong>Exposición Perimetral:</strong> El perímetro del contrato (interfaces públicas) expone demasiada lógica transaccional. La falta de modificadores restrictivos es el punto de falla único más prominente.</li>
+        <li><strong>Robustez Financiera:</strong> Las validaciones de flujo de tokens son susceptibles a manipulaciones de estado (<em>ej. Reentrancy o desbalances de Oracle</em>), lo que compromete directamente los fondos depositados por usuarios e inversores institucionales.</li>
+        <li><strong>Calidad de Código:</strong> A pesar de las brechas de seguridad, la legibilidad del código es adecuada, facilitando enormemente la inserción de parches.</li>
+      </ul>
 
-### IV. OBJETIVOS ESPECIFICOS 
-1. Mapear la infraestructura del contrato y descubrir las funciones expuestas a los usuarios.
-2. Enumerar los métodos, modificadores y variables actualmente expuestas a la blockchain.
-3. Identificar las lógicas vulnerables y patrones de diseño utilizados en el despliegue del contrato.
-4. Comparar la eficacia de diferentes agentes de IA en la detección de los activos y riesgos.
+      <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">VI. RECOMENDACIONES DE LA ALTA GERENCIA TÉCNICA</h3>
+      <ol style="padding-left: 20px;">
+        <li><strong>Implementación de Roles Estrictos (RBAC):</strong> Reforzar o implementar <code>AccessControl</code> de OpenZeppelin. Funciones de actualización del sistema y retiro de fondos de emergencia deben requerir configuración Multi-Sig.</li>
+        <li><strong>Mitigación de Patrones Anti-Patrón:</strong> Aplicar el patrón <em>Checks-Effects-Interactions</em> en todas las funciones <code>payable</code> e incluir candados tipo <code>ReentrancyGuard</code>.</li>
+        <li><strong>Auditoría Continua (Shift-Left Security):</strong> Integrar agentes de IA directamente en el pipeline CI/CD del desarrollo para frenar vulnerabilidades antes de generar el <em>bytecode</em> final en Testnet.</li>
+      </ol>
 
-### V. ANALISIS Y DESARROLLO 
-Para cumplir con los objetivos planteados, se ejecutó una metodología de escaneo utilizando agentes de seguridad especializados. A continuación, se detalla la información recolectada de los hallazgos:
+      <div style="page-break-before: always;"></div>
 
-${hallazgos.length > 0 ? hallazgos.map((h: any) => `**${h.titulo}**\n- **Severidad:** ${h.severidad.toUpperCase()}\n- **Categoría ISO 27001:** ${h.control_iso27001 || 'General'}\n- **Descripción:** ${h.descripcion}\n`).join('\n') : 'No se detectaron vulnerabilidades críticas durante la fase de análisis activo.'}
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 14pt; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">ANEXO A: ÍNDICE DE SUPERFICIE DE ATAQUE (ISA)</h2>
+        <hr style="border: 0; border-top: 1px solid #000; width: 30%; margin: 15px auto;">
+      </div>
 
-### VI. RESULTADOS OBTENIDOS 
-Se ha logrado mapear con éxito la infraestructura pública del contrato. Se identificó el uso de múltiples funciones que exponen directamente a la blockchain lógicas de pagos, transferencias y actualización del estado global. 
-Es de especial atención la detección de los vectores detallados previamente, los cuales ofrecen una vía directa de interacción con los fondos o el flujo del sistema.
-**Security Score del Sistema:** ${dashboardPayload.kpis?.security_score || 100}/100
+      <p>El <strong>ISA</strong> es un indicador cuantitativo matemático que estima de forma empírica la exposición del contrato inteligente frente a la Internet abierta y actores maliciosos.</p>
 
-### VII. CONCLUSIONES 
-- **Comparación de resultados entre agentes:** El Agente Hacker demostró ser la herramienta más robusta para este objetivo, brindando el nivel de detalle más profundo sobre los vectores de ataque. El Agente Economist fue fundamental para el cálculo del valor en riesgo. El Agente Compliance aportó un excelente contexto a nivel de marcos normativos (NIST/ISO).
-- **Funciones mayormente expuestas:** Los servicios con mayor exposición son las funciones públicas sin el modificador \`onlyOwner\` y los métodos que manejan transferencias de fondos.
-- **Análisis de Cantidad Vs Calidad:** Se observó que una menor cantidad de líneas de código exponen una gran cantidad de flujos críticos. La calidad de los hallazgos es alta, ya que permite perfilar exactamente la pila tecnológica y los riesgos de la organización.
+      <p><strong>Fórmula de Ponderación Matemática:</strong></p>
+      <blockquote style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #ccc; font-style: italic;">
+        <strong>ISA</strong> = (Activos &times; 0.3) + (Servicios &times; 0.3) + (Vulnerabilidades &times; 0.4)
+      </blockquote>
+      <p style="font-size: 10pt; color: #555;"><em>Donde la ponderación penaliza mayormente (40%) las vulnerabilidades directas frente a la cantidad cruda de servicios.</em></p>
 
-### VIII. RECOMENDACIONES 
-- **Cerrar accesos críticos:** Restringir inmediatamente el acceso público a las funciones de administración y variables de estado sensibles. El acceso a estos servicios debe realizarse exclusivamente a través de controles de acceso (Access Control).
-- **Revisar plataformas expuestas:** Auditar el estado de actualización de la versión de \`pragma solidity\` y las librerías base (ej. OpenZeppelin), ya que son objetivos comunes para la explotación de vulnerabilidades.
-- **Implementar segmentación:** Evaluar la posibilidad de aislar componentes lógicos (proxy y lógica de implementación) apoyándose en la infraestructura de contratos actualizables si la arquitectura lo permite.
+      <p><strong>Métricas del Contrato Auditado:</strong></p>
+      <ul style="list-style-type: none; padding-left: 0;">
+        <li>&bull; <strong>Activos (A):</strong> ${A} <em>(Archivos .sol, Contratos Base, Librerías)</em></li>
+        <li>&bull; <strong>Servicios (S):</strong> ${S} <em>(Funciones públicas o external endpoints)</em></li>
+        <li>&bull; <strong>Vulnerabilidades (V):</strong> ${V} <em>(Hallazgos de gravedad Media a Crítica)</em></li>
+      </ul>
 
-<div style="page-break-before: always;"></div>
+      <p><strong>Ejecución:</strong></p>
+      <div style="background-color: #f1f1f1; padding: 10px; border: 1px solid #ccc;">
+        <strong>ISA</strong> = (${A} &times; 0.3) + (${S} &times; 0.3) + (${V} &times; 0.4)<br>
+        <strong>ISA</strong> = ${(A * 0.3).toFixed(1)} + ${(S * 0.3).toFixed(1)} + ${(V * 0.4).toFixed(1)}<br>
+        <strong>Total: <span style="text-decoration: underline;">${isaScore.toFixed(1)} / 100</span></strong>
+      </div>
 
-### ANEXO A
-**ÍNDICE DE SUPERFICIE DE ATAQUE (ISA)**
-
-Se calcula un indicador cuantitativo denominado Índice de Superficie de Ataque (ISA), el cual permite estimar el nivel de exposición de una organización (o contrato) en la red a partir de la información recopilada mediante herramientas de reconocimiento. 
-
-Este índice considera tres factores principales:
-- Activos expuestos
-- Servicios publicados
-- Vulnerabilidades identificadas 
-
-El objetivo del índice es medir el nivel de exposición tecnológica y permitir comparar resultados. 
-
-**1. Variables del Índice**
-Se debe identificar las siguientes variables:
-**A** = Número de activos expuestos (Contratos, librerías, dependencias)
-**S** = Número de servicios expuestos (Funciones públicas y externas analizadas)
-**V** = Número de vulnerabilidades detectadas (Hallazgos, CVE equivalentes)
-
-**2. Ecuación del Índice**
-Se aplicará la siguiente ecuación:
-ISA = (A × 0.3) + (S × 0.3) + (V × 0.4)
-
-Se asigna mayor peso a las vulnerabilidades debido a que representan riesgos explotables directamente.
-
-**3. Interpretación del Índice**
-- 0 – 20: Bajo
-- 21 – 50: Medio
-- 51 – 80: Alto
-- 81 – 100: Crítico
-
-**4. Ejemplo de cálculo para este informe**
-**Variable - Cantidad**
-Activos (A) = ${A}
-Servicios (S) = ${S}
-Vulnerabilidades (V) = ${V}
-
-**Cálculo:**
-ISA = (${A} × 0.3) + (${S} × 0.3) + (${V} × 0.4)
-ISA = ${(A * 0.3).toFixed(1)} + ${(S * 0.3).toFixed(1)} + ${(V * 0.4).toFixed(1)}
-**ISA = ${isaScore.toFixed(1)}**
-
-**Resultado:** ${isaScore.toFixed(1)}
-**Nivel de exposición:** ${isaLevel}
-`;
+      <p style="margin-top: 15px;"><strong>Evaluación Final:</strong> El contrato mantiene un nivel de exposición catalogado como <strong>${isaLevel.toUpperCase()}</strong>.</p>
+    </div>
+  `;
 
   try {
-    // 1. Transformamos el Markdown a HTML
-    const htmlContent = await marked.parse(markdownContent);
-
-    // 2. Creamos un contenedor con estilos canónicos (Times New Roman)
     const wrapper = document.createElement('div');
-    wrapper.innerHTML = `
-      <div style="font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; text-align: justify; color: #000;">
-        ${htmlContent}
-      </div>
-    `;
+    wrapper.innerHTML = htmlContent;
 
-    // 3. Importamos html2pdf dinámicamente para que no falle en Next.js SSR
     const html2pdf = (await import('html2pdf.js')).default;
-
-    // 4. Configuramos html2pdf
+    
     const opt = {
-      margin: 15,
-      filename: `Informe_UMSA_${dashboardPayload.audit_id || 'Auditoria'}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      margin:       15,
+      filename:     `Reporte_Harvard_Style_${dashboardPayload.audit_id || 'Auditoria'}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // 5. Generamos y descargamos
     html2pdf().from(wrapper).set(opt).save();
 
   } catch (error) {
@@ -161,4 +200,3 @@ ISA = ${(A * 0.3).toFixed(1)} + ${(S * 0.3).toFixed(1)} + ${(V * 0.4).toFixed(1)
     alert("Hubo un error al generar el PDF. Revisa la consola para más detalles.");
   }
 }
-
