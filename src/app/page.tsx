@@ -144,88 +144,40 @@ export default function Home() {
           <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain rounded-md" />
           <span className="text-foreground">5-Agent-Cats</span>
         </div>
-        <div className="flex gap-3">
-          <Button variant="secondary" size="sm" className="font-semibold text-primary">
-            ⚙️ Configuración
-          </Button>
-        </div>
+
       </nav>
 
       {/* Hero Section */}
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-16 text-center">
-        <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-sm font-semibold text-primary mb-6 animate-in fade-in slide-in-from-bottom-4">
-          <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-          Sistema Multi-Agente · Avalanche · ISO 27001
-        </div>
 
         <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight max-w-3xl mb-5 animate-in fade-in slide-in-from-bottom-5">
           Auditoría de Smart Contracts <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
-            Potenciada por 5 Agentes IA
+            5 Agentes IA
           </span>
         </h1>
 
-        <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-10 animate-in fade-in slide-in-from-bottom-6">
-          Análisis de seguridad profesional bajo estándares ISO/IEC 27001 y NIST CSF. resupuesto de tokens controlado y liquidación on-chain en Avalanche.
-        </p>
-
         {/* Audit Form Card */}
         <div className="w-full max-w-3xl bg-card border border-border shadow-2xl rounded-2xl p-6 md:p-8 text-left animate-in fade-in zoom-in-95 duration-500">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-foreground">Nueva Auditoría</h2>
-            <span className="px-3 py-1 bg-secondary text-secondary-foreground text-xs font-semibold rounded-md">
-              Presupuesto: <span className="text-primary font-bold">$0.10</span>
-            </span>
-          </div>
-
-          {/* Agent Pipeline Visual */}
-          <div className="flex items-center gap-2 p-4 bg-background border border-border/50 rounded-xl mb-8 overflow-x-auto">
-            <div className="flex flex-col items-center gap-1 min-w-[60px]">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-lg">🔍</div>
-              <span className="text-[10px] font-bold uppercase text-muted-foreground">Escáner</span>
-            </div>
-            <div className="text-muted-foreground">→</div>
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-row items-center gap-2 min-w-[80px]">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-sm">💰</div>
-                <span className="text-[9px] font-bold uppercase text-muted-foreground">Economista</span>
-              </div>
-              <div className="flex flex-row items-center gap-2 min-w-[80px]">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-sm">📋</div>
-                <span className="text-[9px] font-bold uppercase text-muted-foreground">Cumplimiento</span>
-              </div>
-            </div>
-            <div className="text-muted-foreground">→</div>
-            <div className="flex flex-col items-center gap-1 min-w-[60px]">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-lg">🎯</div>
-              <span className="text-[10px] font-bold uppercase text-muted-foreground">Hacker</span>
-            </div>
-            <div className="text-muted-foreground">→</div>
-            <div className="flex flex-col items-center gap-1 min-w-[60px]">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-lg">🧠</div>
-              <span className="text-[10px] font-bold uppercase text-muted-foreground">Manager</span>
-            </div>
-          </div>
-
           {/* Tabs */}
           <div className="flex border-b border-border mb-6">
             <button
               className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'single' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
               onClick={() => setActiveTab('single')}
             >
-              📄 Archivo .sol
+              Archivo .sol
             </button>
             <button
               className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'multi' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
               onClick={() => setActiveTab('multi')}
             >
-              📁 Múltiples .sol
+              Múltiples .sol
             </button>
             <button
               className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'address' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
               onClick={() => setActiveTab('address')}
             >
-              🔗 Address Avalanche
+              Address Avalanche
             </button>
           </div>
 
@@ -286,7 +238,7 @@ export default function Home() {
               onClick={handleStartAudit}
               disabled={isStarting}
             >
-              {isStarting ? (paymentStatus || "⏳ Preparando...") : "🚀 Iniciar Auditoría (0.001 AVAX)"}
+              {isStarting ? (paymentStatus || "⏳ Preparando...") : " Iniciar Auditoría por 0.001 AVAX "}
             </Button>
           </div>
         </div>
