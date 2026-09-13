@@ -141,9 +141,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="flex items-center gap-3 font-extrabold text-xl tracking-tight">
-          <div className="w-8 h-8 rounded-md bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-sm">
-            🛡️
-          </div>
+          <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain rounded-md" />
           <span className="text-foreground">5-Agent-Cats</span>
         </div>
         <div className="flex gap-3">
