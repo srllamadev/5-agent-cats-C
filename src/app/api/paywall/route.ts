@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { JsonRpcProvider } from 'ethers';
 
-const CONTRACT_ADDRESS = '0x0802F6A4d9264776B574f2031B9865eCD3266271';
+const CONTRACT_ADDRESS = '0x162A23eF87a8B99D42606Fb077BdE490FCAC5496';
 const RPC_URL = 'https://api.avax-test.network/ext/bc/C/rpc'; // Fuji Testnet
 
 export async function GET(request: Request) {
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
       { 
         error: 'Payment Required', 
         contractAddress: CONTRACT_ADDRESS,
-        price: '0.1', // AVAX
+        price: '0.001', // AVAX
         network: 'Avalanche Fuji Testnet'
       }, 
       { status: 402 }
@@ -39,8 +39,8 @@ export async function GET(request: Request) {
     //   return NextResponse.json({ error: 'Transaction was not sent to the paywall contract' }, { status: 400 });
     // }
 
-    // Check if the value is at least 0.1 AVAX (100000000000000000 wei)
-    if (tx.value < 100000000000000000n) {
+    // Check if the value is at least 0.001 AVAX (1000000000000000 wei)
+    if (tx.value < 1000000000000000n) {
       return NextResponse.json({ error: 'Insufficient payment amount' }, { status: 400 });
     }
 

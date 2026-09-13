@@ -62,15 +62,18 @@ export default function Home() {
           throw new Error("MetaMask no detectado. Para pagar la auditoría, instala una wallet Web3.");
         }
 
-        const provider = new ethers.BrowserProvider((window as any).ethereum);
+        let provider = new ethers.BrowserProvider((window as any).ethereum);
         await provider.send("eth_requestAccounts", []);
-        const signer = await provider.getSigner();
+        let signer = await provider.getSigner();
 
         const network = await provider.getNetwork();
         // Chain ID for Fuji Testnet is 43113
         if (network.chainId !== 43113n) {
           try {
             await provider.send('wallet_switchEthereumChain', [{ chainId: '0xa869' }]);
+            // Re-instantiate after network switch to avoid NETWORK_ERROR
+            provider = new ethers.BrowserProvider((window as any).ethereum);
+            signer = await provider.getSigner();
           } catch (switchError: any) {
             throw new Error("Por favor cambia a la red Avalanche Fuji Testnet en tu wallet para pagar.");
           }
@@ -285,7 +288,7 @@ export default function Home() {
               onClick={handleStartAudit}
               disabled={isStarting}
             >
-              {isStarting ? (paymentStatus || "⏳ Preparando...") : "🚀 Iniciar Auditoría (0.1 AVAX)"}
+              {isStarting ? (paymentStatus || "⏳ Preparando...") : "🚀 Iniciar Auditoría (0.001 AVAX)"}
             </Button>
           </div>
         </div>
