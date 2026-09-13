@@ -1,85 +1,36 @@
-# Equipo de Auditoría Multi-Agente para Smart Contracts (Avalanche)
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Sistema de auditoría de smart contracts compuesto por 5 agentes de IA especializados, con presupuesto de tokens controlado, circuit breaker, y liquidación on-chain en Avalanche.
+## Getting Started
 
-## Arquitectura
-
-```
-┌─────────────────────────────────────────────────┐
-│                  ORCHESTRATOR                    │
-│         (Manager - síntesis + score)            │
-├──────────┬──────────┬──────────┬────────────────┤
-│ Scanner  │Economist │Compliance│    Hacker      │
-│ (Agente1)│ (Agente2)│ (Agente3)│   (Agente4)   │
-│ AST+     │ Riesgo   │ ISO/NIST │  PoC Exploits  │
-│ líneas   │ financiero│compliance│  2 rondas max  │
-└──────────┴──────────┴──────────┴────────────────┘
-         │                │
-    audit_ledger    Dashboard (HTML/CSS/JS)
-    (cost tracking)  + AuditSettlement.sol
-```
-
-## Agentes
-
-| Agente | Max Output | Rondas | Función |
-|--------|-----------|--------|---------|
-| Scanner | 600 tokens | 1 | AST, líneas sospechosas, vectores iniciales |
-| Economist | 800 tokens | 1 | Riesgo económico, valor en juego |
-| Compliance | 700 tokens | 1 | ISO 27001, NIST CSF, ISO 27002 |
-| Hacker | 1200 tokens | 2 | PoC de explotabilidad |
-| Manager | 1500 tokens | 2 | Síntesis, score, conflictos |
-
-## Marcos Normativos
-
-- **ISO/IEC 27001** — Anexo A: controles de acceso, segregación
-- **ISO/IEC 27002** — Guía de implementación
-- **ISO/IEC 27004** — Métricas (securityScore 0-100)
-- **ISO/IEC 27005** — Gestión de riesgo
-- **ISO 31000** — Matriz Probabilidad x Impacto
-- **NIST CSF** — Identify / Protect / Detect / Respond / Recover
-
-## Instalación
+First, run the development server:
 
 ```bash
-pip install -r requirements.txt
-cp .env.example .env
-# Editar .env con tus API keys
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## Uso
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### 1. Archivo único .sol
-```bash
-python main.py --file contrato.sol
-```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### 2. Múltiples archivos .sol
-```bash
-python main.py --directory ./contratos/
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### 3. Address en Avalanche (fetch desde Snowtrace)
-```bash
-python main.py --address 0x1234...abcd
-```
+## Learn More
 
-## Salida
+To learn more about Next.js, take a look at the following resources:
 
-- `output/{audit_id}_report.json` — Informe ejecutivo completo
-- `output/{audit_id}_dashboard.json` — Payload para el dashboard
-- `output/{audit_id}_ledger.json` — Ledger de costos por agente
-- `dashboard/index.html` — Dashboard visual (abrir en navegador)
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Dashboard
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-Abrir `dashboard/index.html?audit_id=XXXX` para ver resultados visuales.
+## Deploy on Vercel
 
-## Contrato de Liquidación
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-`contracts/AuditSettlement.sol` — Contrato en Avalanche para liquidar pagos de auditoría.
-
-## Presupuesto
-
-- Budget máximo por auditoría: $0.10 USD (configurable en `.env`)
-- Circuit breaker automático si se excede el budget
-- Reportes parciales si algún agente no completa
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
