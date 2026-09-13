@@ -12,7 +12,7 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
   const A = dashboardPayload.contrato ? 1 : 0; // Contratos/Librerías
   const S = auditResult.funciones_analizadas || 5; // Funciones/Servicios analizados
   const V = hallazgos.length;
-  
+
   const isaScore = (A * 0.3) + (S * 0.3) + (V * 0.4);
   const isaLevel = isaScore <= 20 ? 'Bajo' : isaScore <= 50 ? 'Medio' : isaScore <= 80 ? 'Alto' : 'Crítico';
 
@@ -21,9 +21,8 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
   // Construcción del documento en Markdown siguiendo los cánones solicitados
   const markdownContent = `
 <div style="text-align: center; font-weight: bold; margin-bottom: 2rem; font-size: 14pt;">
-UNIVERSIDAD MAYOR DE SAN ANDRES<br>
-FACULTAD DE CIENCIAS PURAS Y NATURALES<br>
-CARRERA DE INFORMÁTICA
+INFORME TÉCNICO<br>
+EQUIPO DE AUDITORIA -5 AGENT CATS
 </div>
 
 <br>
@@ -144,14 +143,14 @@ ISA = ${(A * 0.3).toFixed(1)} + ${(S * 0.3).toFixed(1)} + ${(V * 0.4).toFixed(1)
 
     // 3. Importamos html2pdf dinámicamente para que no falle en Next.js SSR
     const html2pdf = (await import('html2pdf.js')).default;
-    
+
     // 4. Configuramos html2pdf
     const opt = {
-      margin:       15,
-      filename:     `Informe_UMSA_${dashboardPayload.audit_id || 'Auditoria'}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      margin: 15,
+      filename: `Informe_UMSA_${dashboardPayload.audit_id || 'Auditoria'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     // 5. Generamos y descargamos
