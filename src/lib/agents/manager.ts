@@ -372,11 +372,22 @@ function mapPatternSeverity(pattern) {
 }
 
 function mapImpactToSeverity(impact) {
-  if (impact >= 5) return 'critico';
-  if (impact >= 4) return 'alto';
-  if (impact >= 3) return 'medio';
-  if (impact >= 2) return 'bajo';
-  return 'informativo';
+  if (typeof impact === 'string') {
+    const i = impact.toLowerCase();
+    if (i.includes('critic')) return 'critico';
+    if (i.includes('high') || i.includes('alto')) return 'alto';
+    if (i.includes('med')) return 'medio';
+    if (i.includes('low') || i.includes('bajo')) return 'bajo';
+  }
+  const val = Number(impact);
+  if (!isNaN(val)) {
+    if (val >= 5) return 'critico';
+    if (val >= 4) return 'alto';
+    if (val >= 3) return 'medio';
+    if (val >= 2) return 'bajo';
+  }
+  // Default fallback if we can't parse it
+  return 'alto'; // default to high instead of informativo to avoid 100/100 scores for broken LLM responses
 }
 
 function severityToImpact(severity) {

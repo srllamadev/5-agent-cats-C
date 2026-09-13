@@ -34,10 +34,11 @@ Required output schema:
 }
 
 Rules:
-- Mark lines suspicious only if they match known Solidity vulnerability patterns.
+- Mark lines suspicious if they match known Solidity vulnerability patterns (like reentrancy, unprotected selfdestruct, block.timestamp manipulation, tx.origin, delegatecall).
 - Snippet must be the actual code line, truncated to 120 chars.
 - If nothing is suspicious, return "suspicious_lines": [].
-- Do not invent line numbers — use approx if uncertain.`;
+- Do not invent line numbers — use approx if uncertain.
+- ALWAYS try to find at least one potential issue if the code looks dangerous.`;
 
 // ── Runner ────────────────────────────────────────────────────
 /**
@@ -91,4 +92,3 @@ export async function runScanner(contractSource, settings, onProgress = () => {}
     costUSD:   result.costUSD,
   };
 }
-
