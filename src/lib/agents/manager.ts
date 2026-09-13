@@ -55,6 +55,7 @@ Conflict rules:
 - If Scanner flagged reentrancy but Hacker found poc_confirmed=false: downgrade severity to 'informativo', reason='No PoC confirmed'.
 - If Hacker confirmed a PoC: severity must be at least 'alto'.
 - If Economist flagged high impact but Hacker probability is 1: set riesgo_nivel via the matrix.
+- Economist findings (ECON-*) represent fundamental economic risks. DO NOT downgrade them to 'informativo' just because they lack a PoC.
 - Do not invent findings. Only resolve conflicts between the 4 reports provided.`;
 
 // ── Main synthesis function ───────────────────────────────────
@@ -116,9 +117,9 @@ export async function runManager(microReports, agentFailures, meta, settings, on
   // ── Step 5: Build risk matrix entries (ISO 31000) ────────
   const matrizRiesgo = resolvedFindings.map(f => ({
     hallazgo_id: f.id,
-    x: f.probabilidad,
-    y: f.impacto,
-    nivel: calcRiskLevel(f.probabilidad, f.impacto),
+    x: f.probabilidad || 3, // Default to 3 if unknown for matrix plotting
+    y: f.impacto || 3,
+    nivel: calcRiskLevel(f.probabilidad || 3, f.impacto || 3),
     titulo: f.titulo,
   }));
 
@@ -247,7 +248,7 @@ function buildCanonicalFindings(reports, failures) {
       findings.push({
         id:               mkId('ECON'),
         titulo:           `Riesgo económico: ${risk.risk_type}`,
-        severidad:        mapImpactToSeverity(risk.impact_score),
+        severidad:        mapImpactToSeverity(risk.impact_score, risk.value_at_risk),
         probabilidad:     null,
         impacto:          risk.impact_score || null,
         riesgo_nivel:     null,
@@ -371,15 +372,21 @@ function mapPatternSeverity(pattern) {
   return map[pattern] || 'bajo';
 }
 
-function mapImpactToSeverity(impact) {
-  if (typeof impact === 'string') {
-    const i = impact.toLowerCase();
+function mapImpactToSeverity(impact, valueAtRisk) {
+  let valToParse = impact;
+  if (impact == null && valueAtRisk != null) {
+    valToParse = valueAtRisk;
+  }
+  
+  if (typeof valToParse === 'string') {
+    const i = valToParse.toLowerCase();
     if (i.includes('critic')) return 'critico';
     if (i.includes('high') || i.includes('alto')) return 'alto';
     if (i.includes('med')) return 'medio';
     if (i.includes('low') || i.includes('bajo')) return 'bajo';
   }
-  const val = Number(impact);
+  
+  const val = Number(valToParse);
   if (!isNaN(val)) {
     if (val >= 5) return 'critico';
     if (val >= 4) return 'alto';
@@ -409,4 +416,3 @@ function mapVulnToISO(vulnClass) {
 
 // ── calcRiskLevel re-export (used by orchestrator) ─────────────
 export { calcRiskLevel };
-

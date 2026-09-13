@@ -119,16 +119,43 @@ export async function generateExecutiveReportPDF(auditResult: any, dashboardPayl
       <p>A continuación se delinean los resultados consolidados de las auditorías dinámicas realizadas por el escuadrón de agentes.</p><br>
 
       <ul style="padding-left: 20px; list-style-type: square;">
-      ${hallazgos.length > 0 ? hallazgos.map((h: any) => `
+      ${hallazgos.length > 0 ? hallazgos.map((h: any) => {
+        const getBusinessImplication = (h: any) => {
+          const t = h.titulo.toLowerCase();
+          if (t.includes('reentrancy')) {
+            return "Permite que atacantes vacíen los fondos del contrato realizando múltiples llamadas recursivas, resultando en pérdida total de liquidez.";
+          }
+          if (t.includes('price_manipulation') || t.includes('manipulation')) {
+            return "Minadores o bots maliciosos pueden predecir o manipular resultados y variables, drenando el sistema injustamente.";
+          }
+          if (t.includes('rug_pull') || t.includes('selfdestruct')) {
+            return "Un actor malicioso puede destruir el contrato repentinamente, apropiándose de todos los activos y dejando a los inversores en cero.";
+          }
+          if (t.includes('flash_loan')) {
+            return "Manipulación de estados o precios mediante préstamos relámpago, causando robo de reservas del contrato en una sola transacción.";
+          }
+          if (t.includes('fee_drain') || t.includes('drain')) {
+            return "Fuga de comisiones o premios. Reduce la rentabilidad esperada y socava la economía completa del proyecto.";
+          }
+          if (h.severidad === 'critico') {
+            return "Falla estructural severa. Requiere pausar operaciones de inmediato y aplicar parche urgente para evitar un hackeo inminente.";
+          }
+          if (h.severidad === 'alto') {
+            return "Brecha de seguridad mayor con exposición a robo de fondos o manipulación. Debe corregirse sin excusas antes de cualquier despliegue en Mainnet.";
+          }
+          return "Puede generar fricción en la operación o impacto financiero mediano/bajo. Se sugiere refactorizar según las mejores prácticas.";
+        };
+
+        return `
         <li style="margin-bottom: 15px;">
           <strong>${h.titulo.toUpperCase()}</strong><br>
           <span style="font-size: 10pt;">
           &bull; <strong>Severidad:</strong> <u>${h.severidad.toUpperCase()}</u> | <strong>Función Afectada:</strong> <em>${h.funcion_afectada || 'General'}</em><br>
-          &bull; <strong>Implicación:</strong> ${h.descripcion}<br>
-          &bull; <strong>Impacto Económico Estimado:</strong> <u>Alto riesgo de pérdida de liquidez (TVL)</u> si no es parcheado en etapas tempranas.
+          &bull; <strong>Hallazgo Técnico:</strong> ${h.descripcion}<br>
+          &bull; <strong>Impacto Económico y Decisión:</strong> ${getBusinessImplication(h)}
           </span>
         </li>
-      `).join('') : '<p style="font-style: italic;">Tras una evaluación minuciosa, no se han detectado vulnerabilidades críticas que comprometan el núcleo financiero o la lógica de gobernanza del contrato.</p>'}
+      `}).join('') : '<p style="font-style: italic;">Tras una evaluación minuciosa, no se han detectado vulnerabilidades críticas que comprometan el núcleo financiero o la lógica de gobernanza del contrato.</p>'}
       </ul>
 
       <h3 style="font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 3px;">V. CONCLUSIONES SINTETIZADAS</h3>
