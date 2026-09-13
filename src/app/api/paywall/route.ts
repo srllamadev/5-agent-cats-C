@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { JsonRpcProvider } from 'ethers';
 
-const CONTRACT_ADDRESS = '0xYourContractAddressHere'; // To be updated by user
+const CONTRACT_ADDRESS = '0x0802F6A4d9264776B574f2031B9865eCD3266271';
 const RPC_URL = 'https://api.avax-test.network/ext/bc/C/rpc'; // Fuji Testnet
 
 export async function GET(request: Request) {

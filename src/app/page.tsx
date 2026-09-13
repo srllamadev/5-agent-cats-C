@@ -78,9 +78,16 @@ export default function Home() {
 
         setPaymentStatus('Esperando confirmación en MetaMask...');
         
+        // Encode the function call payForAudit(string auditId)
+        const iface = new ethers.Interface([
+          "function payForAudit(string memory auditId) public payable"
+        ]);
+        const data = iface.encodeFunctionData("payForAudit", [meta.auditId || "unknown"]);
+
         const tx = await signer.sendTransaction({
           to: paywallData.contractAddress,
           value: ethers.parseEther(paywallData.price),
+          data: data
         });
 
         setPaymentStatus('Confirmando transacción en Avalanche...');
