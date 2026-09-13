@@ -147,102 +147,116 @@ export default function Home() {
 
       </nav>
 
-      {/* Hero Section */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-16 text-center">
+      <main className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
 
-        <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight max-w-3xl mb-5 animate-in fade-in slide-in-from-bottom-5">
-          Auditoría de Smart Contracts <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
-            5 Agentes IA
-          </span>
-        </h1>
-
-        {/* Audit Form Card */}
-        <div className="w-full max-w-3xl bg-card border border-border shadow-2xl rounded-2xl p-6 md:p-8 text-left animate-in fade-in zoom-in-95 duration-500">
-          {/* Tabs */}
-          <div className="flex border-b border-border mb-6">
-            <button
-              className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'single' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-              onClick={() => setActiveTab('single')}
-            >
-              Archivo .sol
-            </button>
-            <button
-              className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'multi' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-              onClick={() => setActiveTab('multi')}
-            >
-              Múltiples .sol
-            </button>
-            <button
-              className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'address' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-              onClick={() => setActiveTab('address')}
-            >
-              Address Avalanche
-            </button>
+          {/* Bento Box 1: Title & Description (Spans 2 cols) */}
+          <div className="md:col-span-2 bg-card border border-border shadow-xl shadow-primary/5 rounded-3xl p-8 md:p-12 flex flex-col justify-center animate-in fade-in zoom-in-95 duration-500">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
+              Auditoría de Smart Contracts <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+                5 Agentes IA
+              </span>
+            </h1>
           </div>
 
-          {/* Content */}
-          <div className="min-h-[160px] flex flex-col justify-center">
-            {activeTab === 'single' && (
-              <label className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-background block">
-                <input type="file" className="hidden" accept=".sol" onChange={handleFileChange} />
-                <div className="text-4xl mb-3">📄</div>
-                <h3 className="text-foreground font-semibold mb-1">
-                  {files.length > 0 ? files[0].name : "Arrastra tu contrato aquí"}
-                </h3>
-                <p className="text-sm text-muted-foreground">O haz clic para seleccionar un archivo <strong>.sol</strong></p>
-              </label>
-            )}
+          {/* Bento Box 2: Network & Pricing (Spans 1 col) */}
+          <div className="bg-gradient-to-br from-primary to-accent text-white shadow-xl shadow-primary/20 rounded-3xl p-8 flex flex-col items-start justify-between animate-in fade-in zoom-in-95 duration-500 delay-75">
 
-            {activeTab === 'multi' && (
-              <label className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-background block">
-                <input type="file" className="hidden" accept=".sol" multiple onChange={handleFileChange} />
-                <div className="text-4xl mb-3">📁</div>
-                <h3 className="text-foreground font-semibold mb-1">
-                  {files.length > 0 ? `${files.length} archivos seleccionados` : "Arrastra múltiples contratos"}
-                </h3>
-                <p className="text-sm text-muted-foreground">Selecciona varios archivos <strong>.sol</strong> (interfaces, contrato principal)</p>
-              </label>
-            )}
+            <div>
+              <h3 className="text-2xl font-black mb-2">Avalanche Fuji</h3>
+              <p className="text-white/90 font-semibold mb-6 text-sm">On-Chain (x402)</p>
+              <div className="inline-flex items-center gap-2 bg-white/20 px-5 py-2.5 rounded-2xl text-xl font-black backdrop-blur-md shadow-sm">
+                0.001 AVAX
+              </div>
+            </div>
+          </div>
 
-            {activeTab === 'address' && (
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">Dirección del contrato (Avalanche C-Chain)</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    🔗
+          {/* Bento Box 3: Form (Spans 3 cols) */}
+          <div className="md:col-span-3 bg-card border border-border shadow-xl shadow-primary/5 rounded-3xl p-8 animate-in fade-in zoom-in-95 duration-500 delay-150">
+            {/* Tabs */}
+            <div className="flex border-b border-border mb-8">
+              <button
+                className={`flex-1 pb-4 text-base font-bold border-b-4 transition-colors ${activeTab === 'single' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                onClick={() => setActiveTab('single')}
+              >
+                Archivo .sol
+              </button>
+              <button
+                className={`flex-1 pb-4 text-base font-bold border-b-4 transition-colors ${activeTab === 'multi' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                onClick={() => setActiveTab('multi')}
+              >
+                Múltiples .sol
+              </button>
+              <button
+                className={`flex-1 pb-4 text-base font-bold border-b-4 transition-colors ${activeTab === 'address' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                onClick={() => setActiveTab('address')}
+              >
+                Address Avalanche
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="min-h-[200px] flex flex-col justify-center mb-8">
+              {activeTab === 'single' && (
+                <label className="border-3 border-dashed border-primary/30 rounded-3xl p-10 text-center hover:border-primary/60 hover:bg-primary/5 transition-all cursor-pointer bg-background block">
+                  <input type="file" className="hidden" accept=".sol" onChange={handleFileChange} />
+                  <div className="text-5xl mb-4">📄</div>
+                  <h3 className="text-foreground font-bold text-xl mb-2">
+                    {files.length > 0 ? files[0].name : "Arrastra tu contrato aquí"}
+                  </h3>
+                  <p className="text-base text-muted-foreground font-medium">O haz clic para seleccionar un archivo <strong>.sol</strong></p>
+                </label>
+              )}
+
+              {activeTab === 'multi' && (
+                <label className="border-3 border-dashed border-primary/30 rounded-3xl p-10 text-center hover:border-primary/60 hover:bg-primary/5 transition-all cursor-pointer bg-background block">
+                  <input type="file" className="hidden" accept=".sol" multiple onChange={handleFileChange} />
+                  <div className="text-5xl mb-4">📁</div>
+                  <h3 className="text-foreground font-bold text-xl mb-2">
+                    {files.length > 0 ? `${files.length} archivos seleccionados` : "Arrastra múltiples contratos"}
+                  </h3>
+                  <p className="text-base text-muted-foreground font-medium">Selecciona varios archivos <strong>.sol</strong> (interfaces, contrato principal)</p>
+                </label>
+              )}
+
+              {activeTab === 'address' && (
+                <div className="max-w-2xl mx-auto w-full">
+                  <label className="block text-base font-bold text-foreground mb-3">Dirección del contrato (Avalanche C-Chain)</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-xl">
+                      🔗
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="0x..."
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      className="block w-full pl-12 pr-4 py-4 border-2 border-primary/20 rounded-2xl bg-background text-foreground font-medium text-lg focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all outline-none shadow-inner"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="0x..."
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
-                  />
+                  <p className="text-sm text-muted-foreground font-semibold mt-3 text-center">El contrato debe estar verificado en Snowtrace para obtener el código fuente.</p>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">El contrato debe estar verificado en Snowtrace para obtener el código fuente.</p>
+              )}
+            </div>
+
+            {errorMsg && (
+              <div className="mb-6 p-4 bg-destructive/10 text-destructive text-base font-bold rounded-2xl text-center border border-destructive/20">
+                {errorMsg}
               </div>
             )}
-          </div>
 
-          {errorMsg && (
-            <div className="mt-4 p-3 bg-destructive/10 text-destructive text-sm font-semibold rounded-md text-center">
-              {errorMsg}
-            </div>
-          )}
-
-          <div className="mt-6">
             <Button
               size="lg"
-              className="w-full text-base h-14 bg-accent hover:bg-accent/90 text-accent-foreground font-bold shadow-lg hover:shadow-accent/25 transition-all"
+              className="w-full text-lg h-16 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-1"
               onClick={handleStartAudit}
               disabled={isStarting}
             >
-              {isStarting ? (paymentStatus || "⏳ Preparando...") : " Iniciar Auditoría por 0.001 AVAX "}
+              {isStarting ? (paymentStatus || "⏳ Preparando...") : "Iniciar Auditoría por 0.001 AVAX"}
             </Button>
           </div>
-        </div>
 
+        </div>
       </main>
     </div>
   );
