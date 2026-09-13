@@ -19,13 +19,13 @@ export default function Audit() {
       router.push('/');
       return;
     }
-    
+
     started.current = true;
-    
+
     onAuditEvent('agent:progress', (data: any) => {
       setPipelineStatus(prev => [...prev, `[${data.agent}] ${data.status}`]);
     });
-    
+
     onAuditEvent('agent:done', (data: any) => {
       setPipelineStatus(prev => [...prev, `[${data.agent}] Completado (Costo: $${data.costUSD?.toFixed(4) || 0})`]);
     });
@@ -48,7 +48,7 @@ export default function Audit() {
           <div className="w-8 h-8 rounded-md bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-sm">
             🛡️
           </div>
-          <span className="text-foreground">AuditAI</span>
+          <span className="text-foreground">5-Agent-Cats</span>
         </div>
         <Button variant="outline" className="font-semibold" onClick={() => router.push('/')}>Cancelar Auditoría</Button>
       </nav>

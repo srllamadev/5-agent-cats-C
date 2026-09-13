@@ -15,7 +15,7 @@ export default function Dashboard() {
   useEffect(() => {
     const dPayload = getDashboardPayload();
     const aResult = getAuditResult();
-    
+
     if (!dPayload || !aResult) {
       // router.push('/'); // Comentado para desarrollo
     } else {
@@ -42,7 +42,7 @@ export default function Dashboard() {
           <div className="w-8 h-8 rounded-md bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-sm">
             🛡️
           </div>
-          <span className="text-foreground">AuditAI</span>
+          <span className="text-foreground">5-Agent-Cats</span>
         </div>
         <Button variant="outline" className="font-semibold" onClick={() => router.push('/')}>Volver</Button>
       </nav>
@@ -53,7 +53,7 @@ export default function Dashboard() {
             <h1 className="text-3xl font-black text-foreground mb-2">Dashboard de Seguridad</h1>
             <p className="text-muted-foreground">ID: {payload?.audit_id || 'N/A'}</p>
           </div>
-          <Button 
+          <Button
             className="bg-accent text-accent-foreground font-bold hover:bg-accent/90"
             onClick={handleDownloadPDF}
             disabled={!payload}
@@ -102,12 +102,11 @@ export default function Dashboard() {
                 findings.map((f: any, idx: number) => (
                   <tr key={idx} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded font-bold text-xs ${
-                        f.severidad === 'critico' ? 'bg-destructive/10 text-destructive' :
-                        f.severidad === 'alto' ? 'bg-amber-600/10 text-amber-600' :
-                        f.severidad === 'medio' ? 'bg-amber-500/10 text-amber-500' :
-                        'bg-emerald-500/10 text-emerald-500'
-                      }`}>
+                      <span className={`px-2 py-1 rounded font-bold text-xs ${f.severidad === 'critico' ? 'bg-destructive/10 text-destructive' :
+                          f.severidad === 'alto' ? 'bg-amber-600/10 text-amber-600' :
+                            f.severidad === 'medio' ? 'bg-amber-500/10 text-amber-500' :
+                              'bg-emerald-500/10 text-emerald-500'
+                        }`}>
                         {f.severidad.toUpperCase()}
                       </span>
                     </td>
