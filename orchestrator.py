@@ -417,7 +417,7 @@ class Orchestrator:
         )
 
         if self.is_partial:
-            resumen += "NOTA: Esta auditoría es PARCIAL por límite de presupuesto de tokens. Algunos agentes no completaron su análisis."
+            resumen += "NOTA: Esta auditoría es PARCIAL "
 
         return resumen
 

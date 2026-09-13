@@ -57,7 +57,7 @@ export default function Home() {
       const paywallRes = await fetch('/api/paywall');
       if (paywallRes.status === 402) {
         const paywallData = await paywallRes.json();
-        
+
         if (!(window as any).ethereum) {
           throw new Error("MetaMask no detectado. Para pagar la auditoría, instala una wallet Web3.");
         }
@@ -80,7 +80,7 @@ export default function Home() {
         }
 
         setPaymentStatus('Esperando confirmación en MetaMask...');
-        
+
         // Encode the function call payForAudit(string auditId)
         const iface = new ethers.Interface([
           "function payForAudit(string memory auditId) public payable"
@@ -94,7 +94,7 @@ export default function Home() {
         });
 
         setPaymentStatus('Confirmando transacción en Avalanche...');
-        
+
         const receipt = await tx.wait();
 
         const verifyRes = await fetch('/api/paywall', {
@@ -166,7 +166,7 @@ export default function Home() {
         </h1>
 
         <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-10 animate-in fade-in slide-in-from-bottom-6">
-          Análisis de seguridad profesional bajo estándares ISO/IEC 27001 y NIST CSF. Presupuesto de tokens controlado y liquidación on-chain en Avalanche.
+          Análisis de seguridad profesional bajo estándares ISO/IEC 27001 y NIST CSF. resupuesto de tokens controlado y liquidación on-chain en Avalanche.
         </p>
 
         {/* Audit Form Card */}
